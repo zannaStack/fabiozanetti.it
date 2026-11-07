@@ -1,8 +1,8 @@
 ---
-title: "Sudoku Engine & Solver con Persistenza SQL"
-subtitle: "Engine algoritmico a oggetti (OOP) con risolutore Backtracking MRV e database relazionale SQLite"
-description: "Applicazione Java complessa progettata secondo i principi OOP e design pattern (Strategy, Command, DAO). Genera schemi con soluzione unica verificata, supporta Undo/Redo illimitato e persiste sessioni e classifiche su SQLite via JDBC."
-tags: ["Java", "OOP", "Backtracking MRV", "Design Patterns", "SQLite", "JDBC", "SQL"]
+title: "Sudoku Engine & Solver con JavaFX e SQLite"
+subtitle: "Engine algoritmico a oggetti (OOP) con interfaccia grafica reattiva JavaFX, Backtracking MRV e database relazionale"
+description: "Applicazione Java complessa con interfaccia grafica nativa JavaFX e architettura a oggetti (Strategy, Command, DAO). Genera schemi con soluzione unica verificata, supporta Undo/Redo illimitato, timer e persiste sessioni e classifiche su SQLite via JDBC."
+tags: ["Java", "JavaFX", "OOP", "Backtracking MRV", "Design Patterns", "SQLite", "JDBC", "SQL"]
 order: 2
 featured: true
 category: "core"
