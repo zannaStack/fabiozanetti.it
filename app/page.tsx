@@ -1,9 +1,9 @@
-"use client";
-
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
+import { siteConfig } from "@/site.config";
+import { getAllProjects } from "@/lib/projects";
+import { ContactBox } from "@/app/components/ContactBox";
 import {
-  Mail,
   FileText,
   ArrowRight,
   ExternalLink,
@@ -12,11 +12,12 @@ import {
   Cpu,
   Layers,
   Sparkles,
-  Copy,
-  Check,
   GraduationCap,
   MapPin,
-  Send,
+  Award,
+  BookOpen,
+  Briefcase,
+  Globe,
 } from "lucide-react";
 
 function GithubIcon({ className = "w-5 h-5" }: { className?: string }) {
@@ -40,105 +41,22 @@ function LinkedinIcon({ className = "w-5 h-5" }: { className?: string }) {
 }
 
 export default function Home() {
-  const [copied, setCopied] = useState(false);
-  const email = "me@fabiozanetti.it";
+  const projects = getAllProjects();
 
-  const handleCopyEmail = () => {
-    navigator.clipboard.writeText(email);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  const getSkillCategoryIcon = (index: number) => {
+    switch (index) {
+      case 0:
+        return <Terminal className="w-5 h-5 text-indigo-400" />;
+      case 1:
+        return <Cpu className="w-5 h-5 text-emerald-400" />;
+      default:
+        return <Layers className="w-5 h-5 text-blue-400" />;
+    }
   };
-
-  const skills = [
-    {
-      category: "Linguaggi",
-      icon: <Terminal className="w-5 h-5 text-indigo-400" />,
-      items: [
-        { name: "C", level: "Avanzato" },
-        { name: "C++", level: "Intermedio" },
-        { name: "Java", level: "Intermedio" },
-        { name: "Python", level: "Avanzato" },
-        { name: "TypeScript", level: "Avanzato" },
-        { name: "JavaScript", level: "Avanzato" },
-        { name: "SQL", level: "Intermedio" },
-      ],
-    },
-    {
-      category: "Web & Frontend",
-      icon: <Layers className="w-5 h-5 text-blue-400" />,
-      items: [
-        { name: "React", level: "Avanzato" },
-        { name: "Next.js (App Router)", level: "Avanzato" },
-        { name: "Tailwind CSS", level: "Avanzato" },
-        { name: "HTML5 & CSS3", level: "Esperto" },
-        { name: "Node.js", level: "Intermedio" },
-        { name: "REST APIs", level: "Avanzato" },
-      ],
-    },
-    {
-      category: "Sistemi, DevOps & Tools",
-      icon: <Cpu className="w-5 h-5 text-emerald-400" />,
-      items: [
-        { name: "Linux / POSIX", level: "Avanzato" },
-        { name: "Git & GitHub", level: "Avanzato" },
-        { name: "Docker", level: "Intermedio" },
-        { name: "Bash Scripting", level: "Intermedio" },
-        { name: "GDB & Valgrind", level: "Intermedio" },
-        { name: "Vercel & CI/CD", level: "Intermedio" },
-      ],
-    },
-  ];
-
-  const projects = [
-    {
-      id: "pathfinder-engine",
-      title: "Algorithmic Graph & Pathfinding Engine",
-      subtitle: "Simulatore di complessità computazionale e gestione memoria",
-      description:
-        "Engine grafico e simulatore per benchmark di algoritmi su grafi (Dijkstra, A*, BFS, DFS). Progettato con focus su allocazione efficiente della memoria cache-friendly, misurazione delle performance e visualizzazione passo-passo.",
-      tags: ["C++", "C", "Algoritmi", "Strutture Dati", "Benchmark"],
-      githubUrl: "https://github.com/fabiozanetti/graph-pathfinder-engine",
-      demoUrl: "https://demo.fabiozanetti.it/pathfinder",
-      featured: true,
-    },
-    {
-      id: "weatherpulse",
-      title: "WeatherPulse - Real-Time Weather App",
-      subtitle: "Web app reattiva con Open-Meteo REST API e caching SSR",
-      description:
-        "Applicazione meteo moderna con geolocalizzazione automatica, grafici orari interattivi e previsioni dettagliate a 7 giorni. Caching lato server Next.js per minimizzare la latenza e interfaccia dark-mode curata con Tailwind CSS.",
-      tags: ["Next.js", "TypeScript", "Tailwind CSS", "REST API", "Vercel"],
-      githubUrl: "https://github.com/fabiozanetti/weather-pulse-app",
-      demoUrl: "https://weather.fabiozanetti.it",
-      featured: true,
-    },
-    {
-      id: "unibo-telegram-bot",
-      title: "UniBo Student Assistant Bot",
-      subtitle: "Automazione e notifiche accademiche asincrone",
-      description:
-        "Bot Telegram sviluppato in Python asincrono con persistenza dati SQLite. Notifica in tempo reale variazioni d'orario delle lezioni, promemoria appelli d'esame e distribuzione rapida di appunti universitari.",
-      tags: ["Python", "AsyncIO", "SQLite", "Docker", "Telegram API"],
-      githubUrl: "https://github.com/fabiozanetti/unibo-telegram-bot",
-      demoUrl: "https://t.me/UniBoAssistantBot",
-      featured: false,
-    },
-    {
-      id: "posix-shell",
-      title: "MicroShell POSIX Unix",
-      subtitle: "Interprete di comandi Unix e gestione concorrente dei processi",
-      description:
-        "Implementazione da zero di una shell interattiva compatibile POSIX in standard C. Gestione di fork(), execvp(), concatenazione pipeline multidirezionali (|), ridirezione stream di input/output (<, >) e segnali di interrupt.",
-      tags: ["C", "Linux Syscalls", "POSIX", "Process Management", "GDB"],
-      githubUrl: "https://github.com/fabiozanetti/posix-microshell",
-      demoUrl: "https://github.com/fabiozanetti/posix-microshell",
-      featured: false,
-    },
-  ];
 
   return (
     <div className="relative min-h-screen bg-grid-pattern glow-radial flex flex-col justify-between">
-      {/* Barra di Navigazione Superiore */}
+      {/* Header Sticky */}
       <header className="sticky top-0 z-50 backdrop-blur-md bg-[#090a0f]/80 border-b border-zinc-800/80">
         <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link
@@ -148,45 +66,33 @@ export default function Home() {
             <span className="w-8 h-8 rounded-lg bg-zinc-800 border border-zinc-700/80 flex items-center justify-center font-bold text-xs text-indigo-400">
               FZ
             </span>
-            <span className="text-sm font-semibold">Fabio Zanetti</span>
+            <span className="text-sm font-semibold">{siteConfig.personal.name}</span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-6 text-sm text-zinc-400">
-            <a
-              href="#competenze"
-              className="hover:text-zinc-100 transition-colors"
-            >
+            <a href="#competenze" className="hover:text-zinc-100 transition-colors">
               Competenze
             </a>
-            <a
-              href="#progetti"
-              className="hover:text-zinc-100 transition-colors"
-            >
+            <a href="#progetti" className="hover:text-zinc-100 transition-colors">
               Progetti
             </a>
-            <a
-              href="#percorso"
-              className="hover:text-zinc-100 transition-colors"
-            >
-              Percorso
+            <a href="#formazione" className="hover:text-zinc-100 transition-colors">
+              Formazione
             </a>
-            <a
-              href="#contatti"
-              className="hover:text-zinc-100 transition-colors"
-            >
+            <a href="#contatti" className="hover:text-zinc-100 transition-colors">
               Contatti
             </a>
           </nav>
 
           <div className="flex items-center gap-3">
             <a
-              href="/cv.pdf"
+              href={siteConfig.links.cvUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-full bg-zinc-800/90 hover:bg-zinc-700 text-zinc-200 border border-zinc-700/60 transition-all shadow-sm"
             >
               <FileText className="w-3.5 h-3.5 text-indigo-400" />
-              <span>CV</span>
+              <span>Scarica CV</span>
             </a>
             <a
               href="#contatti"
@@ -198,36 +104,37 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Contenuto Principale */}
+      {/* Main Content */}
       <main className="max-w-5xl mx-auto px-6 pt-16 pb-24 flex-1 w-full space-y-28">
         {/* 1. Hero Section */}
         <section className="relative pt-6 md:pt-12 space-y-8">
-          {/* Badge Stato / Disponibilità */}
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-            </span>
-            Disponibile per Tirocini / Stage Curriculari
-          </div>
+          {siteConfig.personal.status.available && (
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              {siteConfig.personal.status.text}
+            </div>
+          )}
 
           <div className="space-y-4 max-w-3xl">
             <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-tight">
-              Fabio Zanetti
+              {siteConfig.personal.name}
             </h1>
             <p className="text-xl sm:text-2xl text-indigo-300 font-medium tracking-tight flex items-center gap-2">
               <GraduationCap className="w-6 h-6 text-indigo-400 shrink-0" />
-              Computer Engineering Student @ Bologna
+              {siteConfig.personal.role}
             </p>
-            <p className="text-base sm:text-lg text-zinc-400 leading-relaxed pt-2">
-              Appassionato di architetture software ad alte prestazioni, sistemi
-              operativi e sviluppo web moderno. Unisco solide basi matematiche
-              e algoritmiche con tecnologie moderne per costruire prodotti
-              robusti, performanti ed eleganti.
+            <p className="text-base sm:text-lg text-zinc-300 leading-relaxed pt-2">
+              {siteConfig.personal.shortBio}
+            </p>
+            <p className="text-sm sm:text-base text-zinc-400 leading-relaxed border-l-2 border-indigo-500/60 pl-4 py-1 italic">
+              &quot;{siteConfig.personal.objective}&quot;
             </p>
           </div>
 
-          {/* CTA & Social Actions */}
+          {/* Azioni Rapide & Social */}
           <div className="flex flex-wrap items-center gap-4 pt-2">
             <a
               href="#progetti"
@@ -238,48 +145,51 @@ export default function Home() {
             </a>
 
             <a
-              href="/cv.pdf"
+              href={siteConfig.links.cvUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-200 border border-zinc-700/80 font-medium text-sm transition-all active:scale-95 shadow-sm"
             >
               <FileText className="w-4 h-4 text-zinc-400" />
-              <span>Scarica CV</span>
+              <span>Scarica CV (PDF)</span>
             </a>
 
             <div className="h-6 w-[1px] bg-zinc-800 mx-1 hidden sm:block"></div>
 
             <div className="flex items-center gap-2">
               <a
-                href="https://github.com/fabiozanetti"
+                href={siteConfig.links.github}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="GitHub Profile"
                 className="p-2.5 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-800 hover:border-zinc-700 transition-all"
+                title="Profilo GitHub zannaStack"
               >
                 <GithubIcon className="w-5 h-5" />
               </a>
               <a
-                href="https://linkedin.com/in/fabiozanetti"
+                href={siteConfig.links.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="LinkedIn Profile"
                 className="p-2.5 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-800 hover:border-zinc-700 transition-all"
+                title="Profilo LinkedIn"
               >
                 <LinkedinIcon className="w-5 h-5" />
               </a>
               <a
-                href="mailto:me@fabiozanetti.it"
+                href={`mailto:${siteConfig.personal.email}`}
                 aria-label="Email Me"
                 className="p-2.5 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-800 hover:border-zinc-700 transition-all"
+                title="Invia Email"
               >
-                <Mail className="w-5 h-5" />
+                <MailIcon className="w-5 h-5" />
               </a>
             </div>
           </div>
         </section>
 
-        {/* 2. Tech Stack / Competenze */}
+        {/* 2. Tech Stack & Competenze */}
         <section id="competenze" className="space-y-8 scroll-mt-24">
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-indigo-400">
@@ -287,16 +197,15 @@ export default function Home() {
               <span>Competenze Tecniche</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
-              Tech Stack & Tooling
+              Tech Stack & Metodologie
             </h2>
             <p className="text-sm text-zinc-400">
-              Tecnologie, linguaggi e strumenti utilizzati nello sviluppo
-              accademico e personale.
+              Linguaggi, concetti ingegneristici e strumenti consolidati nel percorso accademico e nei progetti.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {skills.map((skillGroup, index) => (
+            {siteConfig.skills.map((skillGroup, index) => (
               <div
                 key={index}
                 className="rounded-2xl border border-zinc-800/90 bg-zinc-900/40 p-6 backdrop-blur-sm card-hover-border flex flex-col justify-between"
@@ -304,55 +213,53 @@ export default function Home() {
                 <div>
                   <div className="flex items-center gap-3 mb-5">
                     <div className="p-2 rounded-xl bg-zinc-800/70 border border-zinc-700/50">
-                      {skillGroup.icon}
+                      {getSkillCategoryIcon(index)}
                     </div>
                     <h3 className="font-semibold text-zinc-100 text-base">
                       {skillGroup.category}
                     </h3>
                   </div>
 
-                  <div className="flex flex-wrap gap-2">
+                  <div className="space-y-2.5">
                     {skillGroup.items.map((item, idx) => (
-                      <span
+                      <div
                         key={idx}
-                        className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium bg-zinc-800/60 border border-zinc-700/40 text-zinc-300 hover:border-zinc-600 hover:text-white transition-colors"
+                        className="flex items-center justify-between p-2 rounded-lg bg-zinc-800/40 border border-zinc-700/30 text-xs"
                       >
-                        {item.name}
-                      </span>
+                        <span className="font-medium text-zinc-200">{item.name}</span>
+                        <span className="text-zinc-400 font-mono text-[11px]">{item.level}</span>
+                      </div>
                     ))}
                   </div>
                 </div>
 
                 <div className="mt-6 pt-4 border-t border-zinc-800/60 flex items-center justify-between text-[11px] text-zinc-500">
-                  <span>Stack verificato su progetti</span>
-                  <span className="flex items-center gap-1 text-emerald-400">
-                    <Check className="w-3 h-3" /> Operativo
-                  </span>
+                  <span>Valutato su codice pratico</span>
+                  <span className="text-emerald-400 font-medium">Consolidato</span>
                 </div>
               </div>
             ))}
           </div>
         </section>
 
-        {/* 3. Bacheca Progetti (Portfolio Showcase) */}
+        {/* 3. Progetti Selezionati con Markdown nativo */}
         <section id="progetti" className="space-y-8 scroll-mt-24">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div className="space-y-2">
               <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-indigo-400">
                 <Sparkles className="w-4 h-4" />
-                <span>Showcase</span>
+                <span>Showcase Progetti</span>
               </div>
               <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
-                Progetti Selezionati
+                Progetti & Architetture
               </h2>
               <p className="text-sm text-zinc-400">
-                Progetti pratici e accademici focalizzati su architettura,
-                performance e usabilità.
+                Ogni scheda include dettagli architetturali, scelte implementative e codice.
               </p>
             </div>
 
             <a
-              href="https://github.com/fabiozanetti"
+              href={siteConfig.links.github}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 text-xs text-indigo-400 hover:text-indigo-300 transition-colors font-medium"
@@ -365,13 +272,15 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {projects.map((project) => (
               <div
-                key={project.id}
+                key={project.slug}
                 className="rounded-2xl border border-zinc-800/90 bg-zinc-900/40 p-6 backdrop-blur-sm card-hover-border flex flex-col justify-between group"
               >
                 <div className="space-y-4">
                   <div className="flex items-start justify-between gap-2">
                     <h3 className="text-lg font-bold text-zinc-100 group-hover:text-indigo-300 transition-colors">
-                      {project.title}
+                      <Link href={`/progetti/${project.slug}`}>
+                        {project.title}
+                      </Link>
                     </h3>
                     {project.featured && (
                       <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 uppercase tracking-wide">
@@ -380,9 +289,11 @@ export default function Home() {
                     )}
                   </div>
 
-                  <p className="text-xs font-medium text-zinc-400">
-                    {project.subtitle}
-                  </p>
+                  {project.subtitle && (
+                    <p className="text-xs font-medium text-zinc-400">
+                      {project.subtitle}
+                    </p>
+                  )}
 
                   <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed">
                     {project.description}
@@ -400,131 +311,205 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 pt-6 mt-6 border-t border-zinc-800/60">
-                  <a
-                    href={project.demoUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-medium transition-all"
+                <div className="flex items-center justify-between pt-6 mt-6 border-t border-zinc-800/60">
+                  <Link
+                    href={`/progetti/${project.slug}`}
+                    className="inline-flex items-center gap-1.5 text-xs font-medium text-indigo-400 hover:text-indigo-300 transition-colors"
                   >
-                    <ExternalLink className="w-3.5 h-3.5 text-indigo-400" />
-                    <span>Demo Live</span>
-                  </a>
-                  <a
-                    href={project.githubUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-700/60 text-xs font-medium transition-all"
-                  >
-                    <GithubIcon className="w-3.5 h-3.5" />
-                    <span>GitHub</span>
-                  </a>
+                    <span>Leggi scheda completa</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+
+                  <div className="flex items-center gap-2">
+                    {project.demoUrl && (
+                      <a
+                        href={project.demoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs transition-all"
+                        title="Demo Live"
+                      >
+                        <ExternalLink className="w-3.5 h-3.5 text-indigo-400" />
+                      </a>
+                    )}
+                    {project.githubUrl && (
+                      <a
+                        href={project.githubUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white text-xs transition-all"
+                        title="Repository GitHub"
+                      >
+                        <GithubIcon className="w-3.5 h-3.5" />
+                      </a>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}
           </div>
         </section>
 
-        {/* 4. Percorso Accademico / Chi Sono */}
-        <section id="percorso" className="space-y-6 scroll-mt-24">
+        {/* 4. Formazione Accademica & Esami di Eccellenza */}
+        <section id="formazione" className="space-y-6 scroll-mt-24">
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-indigo-400">
               <GraduationCap className="w-4 h-4" />
-              <span>Formazione</span>
+              <span>Istruzione & Risultati Accademici</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
-              Percorso Accademico
+              Percorso di Studi Universitario
             </h2>
           </div>
 
-          <div className="rounded-2xl border border-zinc-800/90 bg-zinc-900/40 p-6 md:p-8 backdrop-blur-sm card-hover-border">
+          <div className="rounded-2xl border border-zinc-800/90 bg-zinc-900/40 p-6 md:p-8 backdrop-blur-sm card-hover-border space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-800/80 pb-6">
               <div>
-                <h3 className="text-lg font-bold text-zinc-100">
-                  Laurea Triennale in Ingegneria Informatica (L-8)
+                <h3 className="text-xl font-bold text-zinc-100">
+                  {siteConfig.education.degree}
                 </h3>
                 <p className="text-sm text-indigo-400 flex items-center gap-1.5 mt-1">
-                  <MapPin className="w-4 h-4" /> Alma Mater Studiorum – Università
-                  di Bologna
+                  <MapPin className="w-4 h-4 shrink-0" />
+                  {siteConfig.education.university}
                 </p>
               </div>
-              <div className="text-xs font-mono text-zinc-400 bg-zinc-800/70 px-3 py-1.5 rounded-full border border-zinc-700/40 w-fit">
-                2° Anno in corso (2024 - 2027)
+              <div className="text-xs font-mono text-zinc-300 bg-indigo-500/10 border border-indigo-500/20 px-3 py-1.5 rounded-full w-fit">
+                {siteConfig.education.period}
               </div>
             </div>
 
-            <div className="pt-6 space-y-4">
-              <p className="text-sm text-zinc-300 leading-relaxed">
-                Il percorso unisce rigore scientifico e abilità ingegneristiche,
-                approfondendo la comprensione dell&apos;hardware e del software a ogni
-                livello di astrazione. Focus principale su:
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-zinc-400">
-                <div className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
-                  <span>Algoritmi e Strutture Dati</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
-                  <span>Architettura dei Calcolatori e Microprocessori</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
-                  <span>Sistemi Operativi e Programmazione Concorrente</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
-                  <span>Basi di Dati e Sistemi Informativi</span>
-                </div>
+            {/* Esami con Lode / Valutazione Massima */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 flex items-center gap-2">
+                <Award className="w-4 h-4 text-amber-400" />
+                <span>Esami Rilevanti con Valutazione di Eccellenza</span>
+              </h4>
+
+              <div className="grid grid-cols-1 gap-3 pt-1">
+                {siteConfig.education.highlightExams.map((exam, idx) => (
+                  <div
+                    key={idx}
+                    className="p-4 rounded-xl bg-zinc-900/80 border border-zinc-800 hover:border-zinc-700 transition-colors space-y-1.5"
+                  >
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                      <span className="font-semibold text-zinc-100 text-sm">
+                        {exam.name}
+                      </span>
+                      <span className="px-2 py-0.5 rounded text-xs font-mono font-bold bg-amber-400/10 text-amber-300 border border-amber-400/20 w-fit">
+                        {exam.grade}
+                      </span>
+                    </div>
+                    <p className="text-xs text-zinc-400 leading-relaxed">
+                      {exam.description}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Argomenti Fondamentali */}
+            <div className="pt-2 border-t border-zinc-800/60">
+              <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-3 flex items-center gap-2">
+                <BookOpen className="w-4 h-4 text-indigo-400" />
+                <span>Competenze Chiave del Percorso Ingegneristico</span>
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5 text-xs text-zinc-300">
+                {siteConfig.education.coreTopics.map((topic, i) => (
+                  <div key={i} className="flex items-center gap-2 p-2 rounded-lg bg-zinc-800/40 border border-zinc-700/30">
+                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 shrink-0"></span>
+                    <span>{topic}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Scuola Superiore */}
+            <div className="pt-4 border-t border-zinc-800/60 flex flex-col sm:flex-row sm:items-center justify-between text-xs text-zinc-400 gap-2">
+              <div>
+                <span className="text-zinc-300 font-medium">{siteConfig.education.highSchool.title}</span> — {siteConfig.education.highSchool.school}
+              </div>
+              <div className="font-mono text-zinc-500">
+                Votazione: <strong className="text-zinc-300">{siteConfig.education.highSchool.grade}</strong> ({siteConfig.education.highSchool.period})
               </div>
             </div>
           </div>
         </section>
 
-        {/* 5. Contatti & Opportunità */}
+        {/* 5. Lingue & Certificazioni */}
+        <section className="space-y-6">
+          <div className="space-y-2">
+            <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-indigo-400">
+              <Globe className="w-4 h-4" />
+              <span>Certificazioni & Soft Skills</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
+              Lingue & Esperienze Pratiche
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {siteConfig.languagesAndCerts.map((item, idx) => (
+              <div
+                key={idx}
+                className="rounded-2xl border border-zinc-800/90 bg-zinc-900/40 p-5 backdrop-blur-sm card-hover-border flex flex-col justify-between"
+              >
+                <div className="space-y-2">
+                  <h3 className="font-semibold text-zinc-100 text-sm flex items-center gap-2">
+                    {idx === 0 ? (
+                      <Globe className="w-4 h-4 text-indigo-400" />
+                    ) : (
+                      <Briefcase className="w-4 h-4 text-emerald-400" />
+                    )}
+                    {item.title}
+                  </h3>
+                  <p className="text-xs text-zinc-400 leading-relaxed">
+                    {item.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* 6. Contatti & Opportunità */}
         <section id="contatti" className="space-y-8 scroll-mt-24">
           <div className="rounded-3xl border border-indigo-500/20 bg-gradient-to-b from-indigo-950/20 via-zinc-900/60 to-zinc-900/40 p-8 sm:p-12 text-center relative overflow-hidden backdrop-blur-md">
             <div className="max-w-2xl mx-auto space-y-6">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-indigo-500/10 text-indigo-300 border border-indigo-500/30">
-                <Mail className="w-3.5 h-3.5" />
-                <span>Mettiti in contatto</span>
+                <Briefcase className="w-3.5 h-3.5" />
+                <span>Opportunità & Collaborazioni</span>
               </div>
 
               <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-                Cerchi uno stagista motivato per il tuo team?
+                Interessato a una collaborazione?
               </h2>
 
-              <p className="text-sm sm:text-base text-zinc-400 leading-relaxed">
-                Sono attivamente alla ricerca di opportunità di{" "}
-                <strong className="text-zinc-200">tirocinio curriculare</strong>{" "}
-                o collaborazioni formative nel campo dello sviluppo software,
-                ingegneria dei sistemi o web development.
+              <p className="text-sm sm:text-base text-zinc-300 leading-relaxed">
+                Sono disponibile per collaborazioni <strong className="text-white">part-time (~20h settimanali)</strong> o progetti formativi compatibili con le lezioni universitarie. Desidero inserirmi in un team dinamico per applicare le mie competenze in programmazione strutturata, OOP e backend.
               </p>
 
-              {/* Box Email Interattivo */}
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
-                <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-zinc-900/90 border border-zinc-700/80 text-sm font-mono text-zinc-200 w-full sm:w-auto justify-between sm:justify-start">
-                  <span>{email}</span>
-                  <button
-                    onClick={handleCopyEmail}
-                    className="p-1.5 rounded-lg hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors ml-2"
-                    title="Copia email"
-                    aria-label="Copia indirizzo email"
-                  >
-                    {copied ? (
-                      <Check className="w-4 h-4 text-emerald-400" />
-                    ) : (
-                      <Copy className="w-4 h-4" />
-                    )}
-                  </button>
-                </div>
+              {/* Box Email Interattivo con Copia Rapida */}
+              <ContactBox email={siteConfig.personal.email} />
 
+              <div className="pt-4 flex flex-wrap items-center justify-center gap-6 text-xs text-zinc-400">
                 <a
-                  href={`mailto:${email}?subject=Opportunità%20Tirocinio%20-%20Fabio%20Zanetti`}
-                  className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium transition-all shadow-md shadow-indigo-600/30 active:scale-95 w-full sm:w-auto"
+                  href={siteConfig.links.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-white transition-colors flex items-center gap-1.5"
                 >
-                  <Send className="w-4 h-4" />
-                  <span>Scrivimi un&apos;email</span>
+                  <LinkedinIcon className="w-4 h-4" />
+                  <span>LinkedIn Profile</span>
+                </a>
+                <span>•</span>
+                <a
+                  href={siteConfig.links.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-white transition-colors flex items-center gap-1.5"
+                >
+                  <GithubIcon className="w-4 h-4" />
+                  <span>GitHub zannaStack</span>
                 </a>
               </div>
             </div>
@@ -536,14 +521,14 @@ export default function Home() {
       <footer className="border-t border-zinc-800/80 bg-[#07080c] py-10">
         <div className="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-6 text-xs text-zinc-500">
           <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-center sm:text-left">
-            <span className="font-semibold text-zinc-300">Fabio Zanetti</span>
+            <span className="font-semibold text-zinc-300">{siteConfig.personal.name}</span>
             <span className="hidden sm:inline text-zinc-700">•</span>
-            <span>Ingegneria Informatica — Università di Bologna</span>
+            <span>{siteConfig.personal.role}</span>
           </div>
 
           <div className="flex items-center gap-6">
             <a
-              href="https://github.com/fabiozanetti"
+              href={siteConfig.links.github}
               target="_blank"
               rel="noopener noreferrer"
               className="text-zinc-400 hover:text-zinc-200 transition-colors"
@@ -551,7 +536,7 @@ export default function Home() {
               GitHub
             </a>
             <a
-              href="https://linkedin.com/in/fabiozanetti"
+              href={siteConfig.links.linkedin}
               target="_blank"
               rel="noopener noreferrer"
               className="text-zinc-400 hover:text-zinc-200 transition-colors"
@@ -559,7 +544,7 @@ export default function Home() {
               LinkedIn
             </a>
             <a
-              href="mailto:me@fabiozanetti.it"
+              href={`mailto:${siteConfig.personal.email}`}
               className="text-zinc-400 hover:text-zinc-200 transition-colors"
             >
               Email
@@ -568,5 +553,13 @@ export default function Home() {
         </div>
       </footer>
     </div>
+  );
+}
+
+function MailIcon({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+    </svg>
   );
 }
