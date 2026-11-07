@@ -1,9 +1,9 @@
 ---
-title: "Bot Telegram & Web Scraping: Bandi UniBo e Offerte Lavoro"
-subtitle: "Automazione autonoma in Python per il monitoraggio continuo di bandi universitari e opportunità di tirocinio"
-description: "Agente di monitoraggio multi-piattaforma sviluppato in Python. Esegue scraping continuo su bandi UniBo, LinkedIn Jobs e altri portali, filtrando per parole chiave e inviando alert istantanei via Bot Telegram."
-tags: ["Python", "Telegram Bot API", "Web Scraping", "BeautifulSoup", "Automazione", "REST API"]
-order: 4
+title: "Bot Telegram Bandi UniBo & Opportunità"
+subtitle: "Script di monitoraggio automatico in Python con avvisi istantanei su smartphone"
+description: "Script in Python che monitora periodicamente i bandi dell'Università di Bologna e le opportunità di tirocinio o lavoro part-time, filtrando per parole chiave e inviando una notifica immediata via Telegram con link diretto."
+tags: ["Python", "Web Scraping", "Telegram Bot API", "BeautifulSoup", "Automazione"]
+order: 3
 featured: true
 category: "side"
 githubUrl: "https://github.com/zannaStack"
@@ -11,66 +11,56 @@ demoUrl: ""
 date: "2026"
 ---
 
-## Il Problema Risolto
+## Il Problema Reale
 
-Spesso i bandi universitari per borse di studio, collaborazioni e le opportunità di tirocinio o lavoro part-time a Bologna sono sparsi tra diversi portali (sito dell'Università di Bologna, feed RSS, piattaforme di lavoro esterne). Verificare manualmente questi siti ogni giorno richiede tempo e aumenta il rischio di perdere scadenze critiche.
+All'Università di Bologna vengono pubblicati frequentemente bandi per collaborazioni studentesche (le classiche "150 ore"), borse di studio e offerte di tirocinio curriculare o part-time. 
 
-Per risolvere questo problema concreto, ho progettato e sviluppato un **agente autonomo in Python** in grado di raccogliere, filtrare e notificare in tempo reale tutte le nuove opportunità pertinenti direttamente sul mio smartphone tramite **Telegram**.
+Tuttavia, questi avvisi sono sparsi tra il portale `bandi.unibo.it`, feed RSS e bacheche di facoltà: non esisteva un sistema di alert push personalizzato. Controllare manualmente le pagine ogni settimana fa rischiare di vedere una scadenza troppo tardi.
+
+Per risolvere questo problema, ho scritto uno script in **Python** che controlla automaticamente le nuove pubblicazioni e mi invia un messaggio su **Telegram** non appena esce un bando di mio interesse.
 
 ---
 
-## Architettura del Sistema
+## Come Funziona il Sistema
 
-L'applicazione è strutturata su un'architettura modulare con esecuzione programmata:
+Lo script segue una sequenza lineare e robusta:
 
 ```
-[Portali Web & Feed RSS]
-   ├── UniBo Bandi (RSS/XML & HTML)
-   ├── LinkedIn Guest API
-   └── Portali Lavoro Locali
-              │
-              ▼
-   [Scraping & Parsing Engine (BeautifulSoup)]
-              │
-              ▼
-   [Filtering & Normalization Pipeline]
-   (Controllo Keyword, Località Bologna, Data recente)
-              │
-              ▼
-   [State & Deduplication Layer (JSON)]
-   (Verifica se l'annuncio è già stato notificato)
-              │
-              ▼
-   [Telegram Bot Service] ────> Push Alert su Smartphone
-              ▲
-              │
-   [Telegram Command Listener] <─── Comandi utente (/status, /keywords)
+[Portali Web & Feed RSS UniBo]
+             │
+             ▼
+[Download & Parsing con BeautifulSoup]
+             │
+             ▼
+[Filtro Parole Chiave (es. ingegneria, tirocinio, part-time)]
+             │
+             ▼
+[Controllo Duplicati su archivio locale JSON]
+             │
+      (Nuovo bando trovato?)
+      ├── SÌ ──> [Telegram Bot API] ──> Messaggio Push su Smartphone
+      └── NO ──> [Nessuna azione, fine esecuzione]
 ```
 
----
+### 1. Estrazione dei Bandi
+Interroga periodicamente il feed RSS e le pagine web di `bandi.unibo.it` utilizzando `requests` e `BeautifulSoup` per estrarre:
+- Titolo del bando o dell'opportunità
+- Data di pubblicazione e scadenza per la domanda
+- Struttura universitaria emittente
+- Link diretto alla modulistica ufficiale
 
-## Funzionalità Principali
+### 2. Filtro per Argomento
+Analizza il testo del titolo e della descrizione verificando la corrispondenza con un insieme di parole chiave configurabili (es. *ingegneria informatica*, *collaborazione*, *tutor*, *tirocinio*, *part-time*). Gli avvisi che non riguardano il mio settore vengono scartati automaticamente.
 
-### 1. Scraping Multi-Sorgente Flessibile
-- **UniBo Bandi**: Estrazione automatica tramite parsing strutturato del feed RSS XML di `bandi.unibo.it` con fallback tramite scraping HTML per schede dettagliate.
-- **Portali di Lavoro & LinkedIn**: Rilevamento di posizioni junior, part-time e tirocini a Bologna interfacciandosi con endpoint e selettori HTML dedicati.
+### 3. Prevenzione dei Messaggi Duplicati
+Per evitare di ricevere notifiche ripetute dello stesso bando a ogni controllo, lo script salva gli identificativi dei bandi già notificati in un semplice file JSON locale (`sent_notifications.json`). Ad ogni esecuzione, i bandi già presenti nell'elenco vengono ignorati.
 
-### 2. Pipeline di Filtraggio Intelligente
-- Analisi testuale per corrispondenza di parole chiave mirate (*studente*, *tirocinio*, *stage*, *ingegneria informatica*, *sviluppatore*, *part-time*).
-- Calcolo automatico della freschezza temporale dell'annuncio (scarto automatico di bandi o annunci scaduti o più vecchi di N giorni).
-- Normalizzazione di caratteri speciali e codifiche UTF-8 per console e notifiche mobili.
-
-### 3. Persistenza e Prevenzione Duplicati
-- Tracciamento univoco degli annunci già elaborati mediante un layer di persistenza JSON (`sent_notifications.json`).
-- Prevenzione assoluta dello spam di notifiche duplicate anche in caso di riavvio del processo.
-
-### 4. Interfaccia Telegram Bidirezionale
-- **Notifiche Push**: Invio di messaggi formattati in HTML con titolo in evidenza, anteprima della descrizione, data e link diretto per candidarsi.
-- **Bot Interattivo**: Polling asincrono tramite l'endpoint `getUpdates` della Telegram Bot API per ricevere comandi dall'utente e modificare dinamicamente i parametri di ricerca o verificare lo stato dell'agente.
+### 4. Notifiche Istantanee su Telegram
+Quando viene individuato un bando pertinente non ancora notificato, lo script si interfaccia con le **Telegram Bot API** inviando un messaggio formattato con titolo in grassetto, data di scadenza e pulsante con link diretto per aprire la pagina del bando dal telefono.
 
 ---
 
-## Competenze Pratiche Dimostrate
-- Padronanza delle librerie Python standard e di terze parti (`requests`, `beautifulsoup4`, `re`, `json`, `logging`).
-- Gestione robusta delle eccezioni di rete, timeout e formati di risposta imprevisti.
-- Configurazione esterna e separazione delle credenziali sensibili da file di configurazione protetti.
+## Dettagli Tecnici
+- **Linguaggio**: Python 3.
+- **Librerie Principali**: `requests` (chiamate HTTP), `beautifulsoup4` (parsing HTML/XML), `json` (persistenza locale).
+- **Sicurezza**: il token del bot Telegram e la chat ID sono salvati in variabili d'ambiente e non tracciati nel repository pubblico.

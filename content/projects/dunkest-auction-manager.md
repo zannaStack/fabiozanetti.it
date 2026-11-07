@@ -1,9 +1,9 @@
 ---
-title: "Dunkest Auction Manager - Web App Fantabasket"
-subtitle: "Applicazione web in React con gestione dello stato complessa per la conduzione di aste live del fantabasket"
-description: "Piattaforma interattiva sviluppata in React e Vite per coordinare in tempo reale l'asta del fantabasket Dunkest. Include calcolo dinamico dei crediti, vincoli sui roster, pannello avversari e storico acquisti."
-tags: ["React", "JavaScript", "Vite", "State Management", "CSS3 / Modulare", "Algoritmi di Allocazione"]
-order: 5
+title: "Dunkest Auction Manager"
+subtitle: "Web app in React per gestire budget e vincoli durante l'asta del fantabasket"
+description: "Single Page Application sviluppata in React e Vite per coordinare in tempo reale l'asta del fantabasket Dunkest. Calcola all'istante l'offerta massima sicura, monitora i crediti residui degli avversari e verifica il rispetto degli slot di ruolo del roster."
+tags: ["React", "Vite", "JavaScript", "State Management", "Tailwind CSS"]
+order: 4
 featured: true
 category: "side"
 githubUrl: "https://github.com/zannaStack"
@@ -11,61 +11,41 @@ demoUrl: ""
 date: "2026"
 ---
 
-## Il Problema Risolto
+## Il Problema Reale
 
-Durante l'asta del fantabasket (in particolare con il regolamento ufficiale di Dunkest), gestire contemporaneamente:
-1. Il proprio budget residuo e i crediti massimi spendibili per giocatore;
-2. Il rispetto dei vincoli di ruolo del roster (Guardie, Ali, Centri e Coach);
-3. La stima dei crediti rimasti a ciascuno degli avversari per prevedere i rilanci;
-4. La consultazione rapida delle statistiche e delle fasce di prezzo dei giocatori;
+Chi fa il fantabasket con gli amici (in particolare con il regolamento ufficiale di **Dunkest**) sa quanto sia caotica l'asta dal vivo:
+1. Devi tenere d'occhio il tuo budget residuo, sapendo che devi obbligatoriamente tenere almeno 1 credito da parte per ogni giocatore ancora da acquistare.
+2. Devi rispettare i vincoli di ruolo (Guardie, Ali, Centri, Coach) senza riempire slot sbagliati.
+3. Devi ricordarti a mente quanti crediti rimangono a ciascun avversario per capire se possono rilanciare o se hai la vittoria assicurata.
 
-risulta estremamente caotico se fatto su fogli di calcolo tradizionali o su carta, rischiando errori di calcolo fatali sul finale d'asta.
-
-Per questo ho realizzato **Dunkest Auction Manager**, una web application reattiva progettata specificamente per supportare il processo decisionale strategico durante tutte le fasi dell'asta dal vivo.
+Farlo su carta o con un foglio Excel al volo porta quasi sempre a distrazioni o conti sbagliati nei minuti finali. Ho quindi sviluppato questa web app per automatizzare tutti i calcoli matematici e concentrarmi solo sulla strategia dell'asta.
 
 ---
 
-## Architettura e Gestione dello Stato
+## Cosa Fa l'Applicazione
 
-L'applicazione è sviluppata come Single Page Application (SPA) ad alte prestazioni con **React** e **Vite**:
+### 1. Calcolo dell'Offerta Massima Sicura (Max Bid)
+Ad ogni acquisto, l'algoritmo calcola in tempo reale la cifra massima che puoi offrire per un giocatore:
+$$\text{Max Bid} = \text{Crediti Residui} - (\text{Giocatori Mancanti} - 1)$$
+In questo modo è impossibile rimanere senza fondi per completare la rosa regolamentare di 10 giocatori + coach.
 
-```
-[useDunkestApp Hook - State Store]
-   ├── Database Giocatori & Quotazioni (Statistiche, Ruoli, Squadre)
-   ├── Roster Personale (Controllo slot occupati e slot obbligatori)
-   ├── Registro Squadre Avversarie (Crediti residui, posti liberi, max bid possibile)
-   └── Log Transazioni & Storico Asta
-            │
-            ▼
-   [Interfaccia Utente Reattiva]
-   ├── Tabella Giocatori & Ricerca con filtri multi-parametro
-   ├── Purchase Modal (Assegnazione rapida e aggiornamento automatico crediti)
-   ├── Pannello Analisi Avversari (Stima aggressività e potenziale di rilancio)
-   └── Pannello Roster con visualizzazione grafica della squadra
-```
+### 2. Radar degli Avversari
+Un pannello dedicato mostra tutte le squadre della lega con:
+- Crediti ancora disponibili.
+- Giocatori acquistati e posti ancora liberi.
+- Offerta massima che ciascun avversario può fare: se il tuo rilancio supera il loro Max Bid, sai con certezza matematica che non possono più rilanciare.
 
----
+### 3. Ricerca e Filtraggio Rapido Giocatori
+- Ricerca istantanea per nome del giocatore o squadra NBA/LBA.
+- Filtri per ruolo (Guardie, Ali, Centri) e fascia di prezzo.
+- Modal di assegnazione rapida con un clic: aggiorna all'istante il budget del compratore e sposta il giocatore tra i "non più disponibili".
 
-## Caratteristiche Principali
-
-### 1. Engine di Calcolo e Validazione Vincoli
-- Algoritmo per determinare in tempo reale la **Puntata Massima Sicura**: calcola quanti crediti è possibile spendere su un singolo giocatore garantendo di poter completare il roster obbligatorio (acquistando i rimanenti a prezzo minimo di 1 credito).
-- Validazione automatica dei limiti di ruolo previsti dal regolamento (massimale di giocatori per ruolo).
-
-### 2. Monitoraggio Strategico degli Avversari
-- Monitoraggio parallelo dei budget di tutte le squadre partecipanti alla lega.
-- Calcolo del "Max Bid" per ogni avversario, indicando immediatamente se un concorrente può rilanciare o se è matematicamente tagliato fuori dalla contesa.
-
-### 3. Ricerca, Ordinamento e Filtri Rapidi
-- Motore di ricerca rapido per nome giocatore, squadra reale NBA/LBA e fascia di quotazione iniziale.
-- Filtraggio per stato (disponibile, acquistato da me, acquistato da avversario).
-
-### 4. Persistenza Locale e Resilienza
-- Salvataggio dello stato dell'asta in `localStorage`, consentendo il recupero immediato di tutti i dati in caso di ricaricamento involontario della pagina durante la diretta dell'asta.
+### 4. Salvataggio Locale Antidisastro (`localStorage`)
+Durante un'asta dal vivo, ricaricare la pagina per sbaglio non deve far perdere i dati. Tutto lo stato della sessione (squadre, giocatori acquistati, crediti spesi) viene sincronizzato su `localStorage`, permettendo di riprendere immediatamente da dove ci si era interrotti.
 
 ---
 
-## Competenze Pratiche Dimostrate
-- Progettazione di architetture a componenti modulari e riutilizzabili in React.
-- Gestione di stati complessi interdipendenti tramite custom hook (`useDunkestApp`) e flussi di dati unidirezionali.
-- Ottimizzazione delle performance di rendering su elenchi di centinaia di elementi e calcoli matematici reattivi ad ogni acquisto.
+## Dettagli Tecnici
+- **Stack**: React (con Vite per build istantaneo), JavaScript moderno ed utility CSS per un layout fluido anche da tablet o portatile.
+- **Gestione dello Stato**: custom hook dedicato (`useDunkestApp`) che centralizza tutte le mutazioni (assegnazione giocatori, svincoli, ricalcolo budget).
+- **Esperienza d'uso**: layout ottimizzato per operare velocemente a colpi di clic e scorciatoie, fondamentale durante i secondi concitati di un rilancio.

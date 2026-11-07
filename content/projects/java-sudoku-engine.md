@@ -1,8 +1,8 @@
 ---
-title: "Sudoku Engine & Solver con JavaFX e SQLite"
-subtitle: "Engine algoritmico a oggetti (OOP) con interfaccia grafica reattiva JavaFX, Backtracking MRV e database relazionale"
-description: "Applicazione Java complessa con interfaccia grafica nativa JavaFX e architettura a oggetti (Strategy, Command, DAO). Genera schemi con soluzione unica verificata, supporta Undo/Redo illimitato, timer e persiste sessioni e classifiche su SQLite via JDBC."
-tags: ["Java", "JavaFX", "OOP", "Backtracking MRV", "Design Patterns", "SQLite", "JDBC", "SQL"]
+title: "Sudoku Game & Solver in Java"
+subtitle: "Applicazione desktop con interfaccia JavaFX, risolutore a backtracking e database SQLite"
+description: "Gioco e risolutore di Sudoku sviluppato in Java con GUI moderna in JavaFX. Include un generatore di schemi a soluzione unica, risolutore automatico con backtracking ed euristica MRV, storico mosse (Undo/Redo) e salvataggio delle partite su SQLite via JDBC."
+tags: ["Java", "JavaFX", "Algoritmi", "Backtracking", "OOP", "SQLite", "JDBC"]
 order: 2
 featured: true
 category: "core"
@@ -11,65 +11,68 @@ demoUrl: ""
 date: "2026"
 ---
 
-## Panoramica del Progetto
+## Perché Questo Progetto?
 
-Il progetto implementa un **engine computazionale completo per Sudoku** sviluppato in linguaggio **Java (JDK 21+)**, focalizzato sul connubio tra complessità algoritmica, architettura orientata agli oggetti e persistenza su database relazionale SQL.
+Dopo aver superato l'esame di **Sistemi Software a Oggetti (30/30)** all'Università di Bologna, volevo realizzare un'applicazione autonoma completa in Java che andasse oltre i tipici esercizi da laboratorio. 
 
-L'applicazione affronta il Sudoku come un problema classico di **Constraint Satisfaction Problem (CSP)**, implementando algoritmi di esplorazione dello spazio degli stati ad alte prestazioni e un layer di persistenza robusto basato su **SQLite**.
+Il Sudoku è un terreno di prova perfetto: richiede sia una solida architettura a oggetti per gestire lo stato della partita, sia algoritmi efficienti per la generazione e la risoluzione automatica delle griglie, il tutto racchiuso in una GUI interattiva con **JavaFX** e persistenza locale su database.
 
 ---
 
-## Architettura del Sistema e Design Pattern
+## Architettura del Progetto
 
-L'architettura segue una netta separazione delle responsabilità (Layered Architecture):
+Il codice è organizzato separando la logica di dominio, l'interfaccia utente e l'accesso ai dati:
 
 ```
-[CLI / Interfaccia Terminale ANSI ad Alto Contrasto]
-                      │
-                      ▼
-            [SudokuGameService]
-                      │
-       ┌──────────────┴──────────────┐
-       ▼                             ▼
-[Generator & Solvers]         [Domain Model]
- ├── Backtracking MRV          ├── Grid (9x9 Bit/Matrix)
- ├── Soluzione Unica Garantita ├── Move (Command Pattern)
- └── Multi-Difficoltà          └── GameSession (State Machine)
-                                     │
-                                     ▼
-                            [GameRepository & DAO]
-                                     │
-                                     ▼
-                        [Database SQLite via JDBC]
-                         ├── puzzles
-                         ├── game_sessions
-                         ├── moves (storico azioni)
-                         └── leaderboard (classifiche)
+[Interfaccia Utente (JavaFX GUI / CLI da terminale)]
+                    │
+                    ▼
+          [SudokuController]
+           ├── Validazione mosse legali
+           ├── Storico Undo/Redo
+           └── Cronometro di gioco
+                    │
+       ┌────────────┴────────────┐
+       ▼                         ▼
+[Algoritmi & Motore]       [Modello & Dati]
+ ├── Backtracking (MRV)     ├── Grid (matrice 9x9)
+ ├── Generatore schemi      ├── GameSession & Move
+ └── Verifica unicità       └── Salvataggio SQLite (JDBC)
 ```
 
-### Pattern Architetturali Implementati:
-1. **Strategy Pattern (`SudokuSolver`)**: Disaccoppia la rappresentazione della scacchiera dall'algoritmo di risoluzione.
-2. **Command Pattern (`Move` / Stacks)**: Incapsula ogni mossa (cella, valore precedente, nuovo valore, timestamp) consentendo operazioni di **Undo** e **Redo** a runtime.
-3. **Data Access Object (DAO) Pattern (`GameRepository`)**: Incapsula tutte le transazioni e le query SQL, prevenendo SQL Injection con Prepared Statements e garantendo il disaccoppiamento tra memoria volatile e storage persistente.
+### Struttura Principale:
+1. **Modello (`Grid`, `Move`, `GameSession`)**: incapsula la scacchiera 9x9, il calcolo dei numeri validi per riga, colonna e riquadro 3x3, e lo stato della sessione.
+2. **Storico Mosse (Undo/Redo)**: ogni mossa dell'utente (cella, valore precedente, nuovo valore) viene memorizzata in uno stack dedicato, permettendo di annullare e ripristinare le giocate all'infinito.
+3. **Persistenza con SQLite (`DatabaseManager`, `GameRepository`)**: memorizza le partite interrotte, lo storico delle mosse e i tempi migliori per ciascuna difficoltà tramite query parametrizzate JDBC.
 
 ---
 
-## Dettagli Algoritmici
+## Gli Algoritmi di Risoluzione e Generazione
 
-### 1. Risolutore Backtracking con Euristica MRV
-A differenza del backtracking ingenuo, il risolutore implementa l'euristica **MRV (Minimum Remaining Values / Most Constrained Variable)**:
-- Ad ogni passo analizza le celle vuote e sceglie quella con il minor numero di candidati legali.
-- Se una cella ha zero candidati, pota immediatamente il ramo di ricerca (*fail-first principle*).
-- Risolve griglie di livello Difficile o Esperto in **meno di 2 millisecondi**.
+### 1. Risolutore a Backtracking con Euristica MRV
+Un backtracking "ingenuo" esplora le celle una dopo l'altra dall'alto a sinistra, rischiando di esplorare rami morti troppo a lungo. Per ottimizzarlo ho implementato l'euristica **MRV (Minimum Remaining Values)**:
+- A ogni passo, l'algoritmo individua la cella vuota che ha il **minor numero di candidati legali possibili**.
+- Se una cella non ha alcun candidato valido, l'algoritmo torna indietro immediatamente (*fail-first*).
+- Questo riduce lo spazio di ricerca e permette di risolvere anche le griglie più complesse in pochissimi millisecondi.
 
-### 2. Generatore con Garanzia di Soluzione Unica
-- Genera una soluzione ground-truth valida riempiendo in modo casuale e indipendente i blocchi diagonali 3x3.
-- Rimuove progressivamente le cifre in base al livello di difficoltà prescelto (*Facile, Medio, Difficile, Esperto*).
-- Ad ogni rimozione esegue un test di conteggio soluzioni `countSolutions(grid, limit=2)`. Se la rimozione rende ambigua la griglia (2 o più soluzioni possibili), il numero viene ripristinato, assicurando che ogni puzzle generato sia matematicamente rigoroso.
+### 2. Generatore di Schemi a Soluzione Unica
+Un buon puzzle di Sudoku deve avere **una e una sola soluzione valida**:
+- Il generatore parte da una griglia completa generata casualmente.
+- Rimuove progressivamente le cifre una ad una in base al livello di difficoltà selezionato (*Facile, Medio, Difficile, Esperto*).
+- Ad ogni rimozione, il risolutore conta quante soluzioni ammette la griglia: se rimuovere un numero porta a 2 o più soluzioni possibili, il numero viene rimesso al suo posto. In questo modo si garantisce che lo schema sia risolvibile per logica senza tirare a indovinare.
 
 ---
 
-## Competenze Tecniche Dimostrate
-- Padronanza avanzata di Java moderno, collezioni avanzate (`Deque`, `List`, `Map`) e flussi di controllo fail-safe.
-- Modellazione di database relazionali con DDL, vincoli di integrità referenziale e query SQL analitiche via JDBC.
-- Suite di test integrata (`--test`) per validazione automatizzata di algoritmi, undo/redo e persistenza.
+## Interfaccia Grafica (JavaFX)
+- Griglia dinamica interattiva con evidenziazione della cella selezionata e dei numeri uguali sulla scacchiera.
+- Tastierino numerico a schermo o input rapido da tastiera.
+- Timer di gioco in tempo reale, conteggio errori e pulsante "Risolvi / Suggerimento".
+- Possibilità di avviare il gioco anche in modalità **CLI da terminale** con caratteri ANSI.
+
+---
+
+## Competenze Approfondite
+- Progettazione orientata agli oggetti (incapsulamento, responsabilità singola, gestione delle eccezioni).
+- Algoritmi di ricerca e ricorsione con potatura (backtracking con euristiche).
+- Sviluppo GUI desktop con JavaFX e gestione degli eventi utente.
+- Integrazione di database relazionali in Java tramite JDBC e SQLite.

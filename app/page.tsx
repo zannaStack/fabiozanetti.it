@@ -237,11 +237,6 @@ export default function Home() {
                     ))}
                   </div>
                 </div>
-
-                <div className="mt-6 pt-4 border-t border-zinc-800/60 flex items-center justify-between text-[11px] text-zinc-500">
-                  <span>Valutato su codice pratico</span>
-                  <span className="text-emerald-400 font-medium">Consolidato</span>
-                </div>
               </div>
             ))}
           </div>
@@ -256,10 +251,10 @@ export default function Home() {
                 <span>Showcase Progetti</span>
               </div>
               <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
-                Progetti & Architetture
+                Progetti
               </h2>
               <p className="text-sm text-zinc-400">
-                Dalle solide basi algoritmiche e OOP a basso livello fino a strumenti reali di automazione e web application.
+                Software, algoritmi e strumenti personali sviluppati in C, Java, Python e React.
               </p>
             </div>
 
@@ -282,13 +277,10 @@ export default function Home() {
               </div>
               <div>
                 <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                  <span>Ingegneria del Software & Sistemi</span>
-                  <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-300 border border-zinc-700/50">
-                    Fondamenti & OOP
-                  </span>
+                  <span>Software & Sistemi (C / Java)</span>
                 </h3>
                 <p className="text-xs text-zinc-400">
-                  Focus su algoritmi, strutture dati, gestione memoria a basso livello e architetture a oggetti.
+                  Algoritmi, gestione della memoria e programmazione orientata agli oggetti.
                 </p>
               </div>
             </div>
@@ -382,13 +374,10 @@ export default function Home() {
               </div>
               <div>
                 <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                  <span>Side Projects & Automazioni Reali</span>
-                  <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                    Soluzioni Pratiche
-                  </span>
+                  <span>Web App & Automazioni (Python / React)</span>
                 </h3>
                 <p className="text-xs text-zinc-400">
-                  Applicazioni complete e script autonomi progettati per risolvere esigenze concrete e flussi di lavoro.
+                  Applicazioni e script nati per risolvere esigenze pratiche e quotidiane.
                 </p>
               </div>
             </div>
