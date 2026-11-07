@@ -25,7 +25,7 @@ export const siteConfig = {
     shortBio:
       "Studente al secondo anno di Ingegneria Informatica presso l'Università di Bologna "+ 
       "con solide competenze di programmazione in C (30 e Lode), Java (30) e Python."+ 
-      "Appassionato di sviluppo backend, logica e algoritmi.",
+      " Appassionato di sviluppo backend, logica e algoritmi.",
 
     // Obiettivo professionale / motivazione
     objective:
