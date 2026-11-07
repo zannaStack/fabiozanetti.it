@@ -16,6 +16,7 @@ export interface ProjectMetadata {
   githubUrl?: string;
   demoUrl?: string;
   date?: string;
+  category?: "core" | "side";
 }
 
 export interface ProjectWithContent extends ProjectMetadata {
@@ -52,6 +53,7 @@ export function getAllProjects(): ProjectMetadata[] {
         githubUrl: data.githubUrl || "",
         demoUrl: data.demoUrl || "",
         date: data.date || "",
+        category: data.category === "side" ? "side" : "core",
       } as ProjectMetadata;
     });
 
@@ -84,6 +86,7 @@ export async function getProjectBySlug(slug: string): Promise<ProjectWithContent
     githubUrl: data.githubUrl || "",
     demoUrl: data.demoUrl || "",
     date: data.date || "",
+    category: data.category === "side" ? "side" : "core",
     contentHtml,
     rawContent: content,
   };

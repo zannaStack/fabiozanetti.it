@@ -3,8 +3,9 @@ title: "fabiozanetti.it - Portfolio Web Personale"
 subtitle: "Architettura statica e performante con Next.js App Router e Tailwind CSS"
 description: "Sito web personale e portfolio sviluppato con Next.js, TypeScript e Tailwind CSS. Progettato con un'architettura headless guidata da file di configurazione e Markdown per la massima manutenibilità."
 tags: ["Next.js", "TypeScript", "Tailwind CSS", "Markdown", "Vercel"]
-order: 3
-featured: true
+order: 5
+featured: false
+category: "core"
 githubUrl: "https://github.com/zannaStack/fabiozanetti.it"
 demoUrl: "https://fabiozanetti-it.vercel.app"
 date: "2026"

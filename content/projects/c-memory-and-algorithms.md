@@ -2,9 +2,10 @@
 title: "Algoritmi e Gestione Dinamica della Memoria in C"
 subtitle: "Studio e implementazione a basso livello di strutture dati, puntatori e file I/O"
 description: "Progetto sviluppato nell'ambito dell'esame di Informatica 1 (valutato 30 e Lode). Include manipolazione avanzata di puntatori, allocazione dinamica sicura e analisi algoritmica."
-tags: ["C", "GCC", "Algoritmi", "Strutture Dati", "Linux", "GDB"]
-order: 1
-featured: true
+tags: ["C", "GCC", "Algoritmi", "Strutture Dati"]
+order: 3
+featured: false
+category: "core"
 githubUrl: "https://github.com/zannaStack"
 demoUrl: ""
 date: "2024-2025"

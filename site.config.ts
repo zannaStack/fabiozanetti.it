@@ -11,7 +11,7 @@ export const siteConfig = {
   // DATI PERSONALI & INTESTAZIONE
   personal: {
     name: "Fabio Zanetti",
-    role: "Studente in Ingegneria Informatica @ Università di Bologna",
+    role: "Studente di Ingegneria Informatica @ Università di Bologna",
     location: "Bologna / Anzola dell'Emilia (BO)",
     email: "fabio06ap@gmail.com",
     
@@ -23,11 +23,15 @@ export const siteConfig = {
 
     // Breve descrizione nella schermata iniziale (Hero)
     shortBio:
-      "Studente al secondo anno di Ingegneria Informatica presso l'Università di Bologna con solide competenze di programmazione in C (30 e Lode), Java (30) e Python. Appassionato di sviluppo backend, logica e algoritmi.",
+      "Studente al secondo anno di Ingegneria Informatica presso l'Università di Bologna "+ 
+      "con solide competenze di programmazione in C (30 e Lode), Java (30) e Python."+ 
+      "Appassionato di sviluppo backend, logica e algoritmi.",
 
     // Obiettivo professionale / motivazione
     objective:
-      "Ricerco una collaborazione part-time (circa 20 ore settimanali) compatibile con le lezioni, desideroso di inserirmi in un team di sviluppo strutturato per consolidare le mie competenze pratiche su programmazione ad oggetti (OOP) e database.",
+      "Ricerco una collaborazione part-time compatibile con le lezioni universitarie,"+
+      " desideroso di inserirmi in un team di sviluppo strutturato per consolidare"+
+      " le mie competenze pratiche su programmazione ad oggetti (OOP) e database.",
   },
 
   // LINK SOCIAL & CURRICULUM
@@ -38,7 +42,7 @@ export const siteConfig = {
     
     // Per aggiornare il CV: basta sostituire il file "cv.pdf" dentro la cartella "public/"!
     // Oppure puoi inserire qui un link a Google Drive / Dropbox se preferisci.
-    cvUrl: "/cv.pdf",
+    cvUrl: "/CV_Fabio_Zanetti.pdf",
   },
 
   // COMPETENZE TECNICHE (Raggruppate per categoria)
@@ -49,18 +53,18 @@ export const siteConfig = {
         { name: "C", level: "Avanzato (Esame: 30 e Lode)" },
         { name: "Java", level: "Intermedio/Avanzato (Esame: 30)" },
         { name: "Python", level: "Intermedio" },
-        { name: "HTML5 / CSS3", level: "Basi" },
+        { name: "HTML5 / CSS3", level: "Base" },
+        { name: "SQL", level: "Base" },
       ],
     },
     {
       category: "Strumenti, Ambienti & OS",
       items: [
-        { name: "Git & GitHub", level: "Operativo" },
-        { name: "VS Code", level: "Operativo" },
-        { name: "GCC & Make", level: "Operativo" },
-        { name: "Linux / POSIX", level: "Basi" },
+        { name: "Git & GitHub", level: "Intermedio" },
+        { name: "Linux / Bash", level: "Intermedio" },
+        { name: "VS Code", level: "Avanzato" },
+        { name: "Valgrind & GDB", level: "Intermedio" },
         { name: "Windows", level: "Avanzato" },
-        { name: "MS Office", level: "Avanzato" },
       ],
     },
     {
@@ -79,7 +83,7 @@ export const siteConfig = {
   education: {
     degree: "Laurea Triennale in Ingegneria Informatica (L-8)",
     university: "Alma Mater Studiorum – Università di Bologna",
-    period: "Settembre 2024 – In corso (2° Anno)",
+    period: "Settembre 2025 – In corso (2° Anno)",
     statusNote: "2° Anno in corso",
     
     // Esami chiave superati con esito eccellente
@@ -88,19 +92,22 @@ export const siteConfig = {
         name: "Informatica 1 (Linguaggio C)",
         grade: "30/30 e Lode",
         description:
-          "Programmazione strutturata, aritmetica dei puntatori, allocazione dinamica della memoria (heap/stack), gestione file e modularizzazione del codice.",
+          "Programmazione strutturata, aritmetica dei puntatori, allocazione dinamica della"+
+          " memoria (heap/stack), gestione file e modularizzazione del codice.",
       },
       {
         name: "Sistemi Software a Oggetti (Linguaggio Java)",
         grade: "30/30",
         description:
-          "Programmazione orientata agli oggetti (OOP), incapsulamento, ereditarietà, polimorfismo, interfacce, design pattern e Java Collections Framework.",
+          "Programmazione orientata agli oggetti (OOP), incapsulamento, ereditarietà,"+
+          " polimorfismo, interfacce, design pattern e Java Collections Framework.",
       },
       {
         name: "Analisi Matematica 1",
         grade: "30/30",
         description:
-          "Sviluppo di elevate capacità analitiche, logiche, dimostrative e attitudine al problem solving rigoroso.",
+          "Sviluppo di elevate capacità analitiche, logiche, dimostrative e attitudine "+
+          "al problem solving rigoroso.",
       },
     ],
 
@@ -115,7 +122,7 @@ export const siteConfig = {
 
     // Scuola superiore
     highSchool: {
-      title: "Diploma di Liceo Scientifico (Indirizzo Sportivo)",
+      title: "Diploma di Liceo Scientifico Scienze Applicate",
       school: "Liceo Sabin, Bologna",
       period: "Settembre 2020 – Giugno 2025",
       grade: "85/100",
@@ -127,16 +134,11 @@ export const siteConfig = {
     {
       title: "Certificazione Lingua Inglese (Livello C1)",
       description:
-        "Conseguita al termine di un soggiorno e percorso di studio intensivo di 3 settimane in Irlanda.",
+        "Conseguita al termine di un soggiorno e percorso di studio di 3 settimane in Irlanda.",
     },
     {
       title: "Patente di Guida B",
       description: "Automunito.",
-    },
-    {
-      title: "Esperienze e Soft Skills",
-      description:
-        "Esperienze come Arbitro/Giudice di gara (decision-making rapido sotto pressione) e Lavoratore agricolo stagionale (forte etica del lavoro, spirito di adattamento e problem solving pratico).",
     },
   ],
 };

@@ -3,8 +3,9 @@ title: "Architettura Software a Oggetti in Java"
 subtitle: "Applicazione orientata agli oggetti con Design Pattern e Java Collections"
 description: "Applicazione sviluppata applicando i principi OOP, ereditarietà, polimorfismo, interfacce e pattern architetturali per l'esame di Sistemi Software a Oggetti (valutato 30/30)."
 tags: ["Java", "OOP", "Design Patterns", "Java Collections", "Software Engineering"]
-order: 2
-featured: true
+order: 4
+featured: false
+category: "core"
 githubUrl: "https://github.com/zannaStack"
 demoUrl: ""
 date: "2025"
