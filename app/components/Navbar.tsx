@@ -12,7 +12,6 @@ import {
   Sparkles,
   GraduationCap,
   Mail,
-  PlayCircle,
 } from "lucide-react";
 
 function GithubIcon({ className = "w-4 h-4" }: { className?: string }) {
@@ -59,7 +58,6 @@ export function Navbar() {
   const navLinks = [
     { label: "Competenze", href: isHome ? "#competenze" : "/#competenze", icon: Code2 },
     { label: "Progetti", href: isHome ? "#progetti" : "/#progetti", icon: Sparkles },
-    { label: "Demo Live", href: isHome ? "#demo-interattiva" : "/#demo-interattiva", icon: PlayCircle },
     { label: "Formazione", href: isHome ? "#formazione" : "/#formazione", icon: GraduationCap },
     { label: "Contatti", href: isHome ? "#contatti" : "/#contatti", icon: Mail },
   ];
@@ -97,16 +95,10 @@ export function Navbar() {
             href={siteConfig.links.cvUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-full bg-zinc-800/90 hover:bg-zinc-700 text-zinc-200 border border-zinc-700/60 transition-all shadow-sm hover:border-zinc-600"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium rounded-full bg-zinc-800/90 hover:bg-zinc-700 text-zinc-200 border border-zinc-700/60 transition-all shadow-sm hover:border-zinc-600"
           >
             <FileText className="w-3.5 h-3.5 text-indigo-400" />
             <span>Scarica CV</span>
-          </a>
-          <a
-            href={isHome ? "#contatti" : "/#contatti"}
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium rounded-full bg-indigo-600 hover:bg-indigo-500 text-white transition-all shadow-sm shadow-indigo-600/30"
-          >
-            <span>Contattami</span>
           </a>
         </div>
 

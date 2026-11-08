@@ -4,7 +4,6 @@ import { siteConfig } from "@/site.config";
 import { getAllProjects } from "@/lib/projects";
 import { ContactBox } from "@/app/components/ContactBox";
 import { Navbar } from "@/app/components/Navbar";
-import { InteractiveShowcase } from "@/app/components/InteractiveShowcase";
 import {
   FileText,
   ArrowRight,
@@ -420,9 +419,6 @@ export default function Home() {
             </div>
           </div>
         </section>
-
-        {/* Demo Interattiva dal Vivo (Sudoku & Terminale CLI) */}
-        <InteractiveShowcase />
 
         {/* 4. Formazione Accademica & Esami di Eccellenza */}
         <section id="formazione" className="space-y-6 scroll-mt-24">
