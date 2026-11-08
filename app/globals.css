@@ -120,6 +120,23 @@
   line-height: 1.6;
 }
 
+/* Shiki code blocks */
+.code-block-container pre.shiki {
+  background-color: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  font-size: 0.875rem;
+  line-height: 1.7;
+}
+
+.code-block-container pre.shiki code {
+  color: inherit !important;
+  background-color: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
 .markdown-body blockquote {
   border-left: 3px solid #6366f1;
   padding-left: 1rem;

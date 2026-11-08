@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react";
+import { JsonLd } from "@/app/components/JsonLd";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -63,7 +65,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-[#090a0f] text-zinc-100 antialiased selection:bg-indigo-500/30 selection:text-indigo-200 font-sans`}
       >
+        <JsonLd />
         {children}
+        <Analytics />
       </body>
     </html>
   );

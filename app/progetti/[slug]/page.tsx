@@ -1,13 +1,15 @@
-import React from "react";
+import React, { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getAllProjects, getProjectBySlug } from "@/lib/projects";
 import { siteConfig } from "@/site.config";
+import { Navbar } from "@/app/components/Navbar";
+import { CodeCopyHandler } from "@/app/components/CodeCopyHandler";
 import {
   ArrowLeft,
+  ArrowRight,
   ExternalLink,
   Calendar,
-  FileText,
 } from "lucide-react";
 
 interface PageProps {
@@ -49,7 +51,21 @@ export async function generateMetadata({ params }: PageProps) {
   };
 }
 
-export default async function ProjectDetailPage({ params }: PageProps) {
+export default function ProjectDetailPage({ params }: PageProps) {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-[#090a0f] flex items-center justify-center text-zinc-500 font-mono text-sm">
+          Caricamento scheda progetto...
+        </div>
+      }
+    >
+      <ProjectDetailContent params={params} />
+    </Suspense>
+  );
+}
+
+async function ProjectDetailContent({ params }: PageProps) {
   const { slug } = await params;
   const project = await getProjectBySlug(slug);
 
@@ -57,41 +73,39 @@ export default async function ProjectDetailPage({ params }: PageProps) {
     notFound();
   }
 
+  const allProjects = getAllProjects();
+  const currentIndex = allProjects.findIndex((p) => p.slug === slug);
+  const prevProject = currentIndex > 0 ? allProjects[currentIndex - 1] : null;
+  const nextProject =
+    currentIndex >= 0 && currentIndex < allProjects.length - 1
+      ? allProjects[currentIndex + 1]
+      : null;
+
   return (
     <div className="relative min-h-screen bg-grid-pattern glow-radial flex flex-col justify-between">
-      {/* Header compatto con navigazione */}
-      <header className="sticky top-0 z-50 backdrop-blur-md bg-[#090a0f]/80 border-b border-zinc-800/80">
-        <div className="max-w-4xl mx-auto px-6 h-16 flex items-center justify-between">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-sm text-zinc-300 hover:text-white transition-colors group"
-          >
-            <ArrowLeft className="w-4 h-4 text-indigo-400 group-hover:-translate-x-1 transition-transform" />
-            <span>Torna alla Home</span>
-          </Link>
+      <CodeCopyHandler />
 
-          <div className="flex items-center gap-3">
-            <a
-              href={siteConfig.links.cvUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-full bg-zinc-800/90 hover:bg-zinc-700 text-zinc-200 border border-zinc-700/60 transition-all shadow-sm"
-            >
-              <FileText className="w-3.5 h-3.5 text-indigo-400" />
-              <span>Scarica CV</span>
-            </a>
-            <a
-              href={`mailto:${siteConfig.personal.email}`}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium rounded-full bg-indigo-600 hover:bg-indigo-500 text-white transition-all shadow-sm shadow-indigo-600/30"
-            >
-              <span>Contattami</span>
-            </a>
-          </div>
+      {/* Header con Navbar responsive e menu mobile */}
+      <Navbar />
+
+      {/* Sotto-barra breadcrumb e ritorno */}
+      <div className="border-b border-zinc-800/60 bg-[#090a0f]/60 backdrop-blur-sm">
+        <div className="max-w-4xl mx-auto px-6 h-12 flex items-center justify-between text-xs">
+          <Link
+            href="/#progetti"
+            className="inline-flex items-center gap-1.5 text-zinc-400 hover:text-white transition-colors group"
+          >
+            <ArrowLeft className="w-3.5 h-3.5 text-indigo-400 group-hover:-translate-x-1 transition-transform" />
+            <span>Torna all&apos;elenco progetti</span>
+          </Link>
+          <span className="text-zinc-600 hidden sm:inline">
+            Progetto {currentIndex + 1} di {allProjects.length}
+          </span>
         </div>
-      </header>
+      </div>
 
       {/* Contenuto Dettaglio Progetto */}
-      <main className="max-w-4xl mx-auto px-6 pt-10 pb-24 flex-1 w-full">
+      <main className="max-w-4xl mx-auto px-6 pt-8 pb-24 flex-1 w-full">
         {/* Intestazione del Progetto */}
         <div className="space-y-6 pb-8 border-b border-zinc-800/80">
           <div className="space-y-3">
@@ -152,7 +166,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
           </div>
         </div>
 
-        {/* Corpo Markdown renderizzato */}
+        {/* Corpo Markdown renderizzato con Shiki */}
         <article className="mt-8 rounded-2xl border border-zinc-800/90 bg-zinc-900/30 p-6 sm:p-10 backdrop-blur-sm">
           <div
             className="markdown-body"
@@ -160,21 +174,56 @@ export default async function ProjectDetailPage({ params }: PageProps) {
           />
         </article>
 
-        {/* Navigazione Footer Articolo */}
-        <div className="mt-12 pt-8 border-t border-zinc-800 flex items-center justify-between">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-sm text-indigo-400 hover:text-indigo-300 transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Torna all&apos;elenco progetti</span>
-          </Link>
-          <a
-            href="#"
-            className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
-          >
-            Torna all&apos;inizio ↑
-          </a>
+        {/* Navigazione Progetto Successivo / Precedente */}
+        <div className="mt-12 pt-8 border-t border-zinc-800/80 space-y-6">
+          <div className="flex items-center justify-between text-xs text-zinc-500">
+            <span>Esplora gli altri progetti</span>
+            <a href="#" className="hover:text-zinc-300 transition-colors">
+              Torna in cima ↑
+            </a>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {prevProject ? (
+              <Link
+                href={`/progetti/${prevProject.slug}`}
+                className="group p-5 rounded-2xl border border-zinc-800/90 bg-zinc-900/40 hover:border-indigo-500/50 hover:bg-zinc-900/80 transition-all flex flex-col justify-between"
+              >
+                <span className="text-[11px] font-mono text-zinc-500 group-hover:text-indigo-400 flex items-center gap-1.5 transition-colors">
+                  <ArrowLeft className="w-3.5 h-3.5" />
+                  Progetto Precedente
+                </span>
+                <span className="font-semibold text-zinc-200 group-hover:text-white transition-colors mt-2 text-sm line-clamp-1">
+                  {prevProject.title}
+                </span>
+                <span className="text-xs text-zinc-500 line-clamp-1 mt-0.5">
+                  {prevProject.subtitle || prevProject.description}
+                </span>
+              </Link>
+            ) : (
+              <div className="hidden sm:block" />
+            )}
+
+            {nextProject ? (
+              <Link
+                href={`/progetti/${nextProject.slug}`}
+                className="group p-5 rounded-2xl border border-zinc-800/90 bg-zinc-900/40 hover:border-indigo-500/50 hover:bg-zinc-900/80 transition-all flex flex-col justify-between text-right"
+              >
+                <span className="text-[11px] font-mono text-zinc-500 group-hover:text-indigo-400 flex items-center justify-end gap-1.5 transition-colors">
+                  Progetto Successivo
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </span>
+                <span className="font-semibold text-zinc-200 group-hover:text-white transition-colors mt-2 text-sm line-clamp-1">
+                  {nextProject.title}
+                </span>
+                <span className="text-xs text-zinc-500 line-clamp-1 mt-0.5">
+                  {nextProject.subtitle || nextProject.description}
+                </span>
+              </Link>
+            ) : (
+              <div className="hidden sm:block" />
+            )}
+          </div>
         </div>
       </main>
 

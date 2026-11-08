@@ -1,7 +1,8 @@
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
-import { marked } from "marked";
+import { Marked } from "marked";
+import { codeToHtml } from "shiki";
 
 const projectsDirectory = path.join(process.cwd(), "content", "projects");
 
@@ -23,6 +24,53 @@ export interface ProjectWithContent extends ProjectMetadata {
   contentHtml: string;
   rawContent: string;
 }
+
+const markedInstance = new Marked({
+  async: true,
+  walkTokens: async (token) => {
+    if (token.type === "code") {
+      const rawLang = token.lang ? token.lang.trim().split(/\s+/)[0] : "text";
+      const normalizedLang = rawLang.toLowerCase();
+      try {
+        (token as unknown as Record<string, unknown>).highlighted = await codeToHtml(token.text, {
+          lang: normalizedLang,
+          theme: "tokyo-night",
+        });
+      } catch {
+        (token as unknown as Record<string, unknown>).highlighted = await codeToHtml(token.text, {
+          lang: "text",
+          theme: "tokyo-night",
+        });
+      }
+    }
+  },
+  renderer: {
+    code(token) {
+      const rawLang = (token.lang || "").trim().split(/\s+/)[0] || "code";
+      const highlighted = (token as unknown as Record<string, unknown>).highlighted;
+      if (typeof highlighted === "string") {
+        return `<div class="code-block-container relative group my-6 rounded-xl overflow-hidden border border-zinc-800 bg-[#1a1b26] shadow-xl">
+          <div class="flex items-center justify-between px-4 py-2 border-b border-zinc-800/80 bg-[#16161e] text-xs text-zinc-400 font-mono">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-indigo-500/80 inline-block"></span>
+              <span class="text-indigo-300 font-semibold uppercase tracking-wider text-[11px]">${rawLang}</span>
+            </div>
+            <button type="button" class="copy-code-btn inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-sans font-medium text-zinc-400 hover:text-zinc-100 bg-zinc-800/80 hover:bg-zinc-700 border border-zinc-700/50 transition-all cursor-pointer" aria-label="Copia codice">
+              <svg class="w-3.5 h-3.5 copy-icon text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
+              <span class="copy-text">Copia</span>
+            </button>
+          </div>
+          <div class="code-block-content text-sm overflow-x-auto p-4 font-mono leading-relaxed">
+            ${highlighted}
+          </div>
+        </div>`;
+      }
+      return `<pre><code>${token.text}</code></pre>`;
+    },
+  },
+});
 
 /**
  * Legge tutti i progetti dalla cartella content/projects/
@@ -62,7 +110,7 @@ export function getAllProjects(): ProjectMetadata[] {
 
 /**
  * Recupera un singolo progetto tramite il suo slug
- * e converte il markdown del corpo in HTML pulito.
+ * e converte il markdown del corpo in HTML pulito con syntax highlighting.
  */
 export async function getProjectBySlug(slug: string): Promise<ProjectWithContent | null> {
   const fullPath = path.join(projectsDirectory, `${slug}.md`);
@@ -73,7 +121,7 @@ export async function getProjectBySlug(slug: string): Promise<ProjectWithContent
 
   const fileContents = fs.readFileSync(fullPath, "utf8");
   const { data, content } = matter(fileContents);
-  const contentHtml = await marked.parse(content);
+  const contentHtml = await markedInstance.parse(content);
 
   return {
     slug,

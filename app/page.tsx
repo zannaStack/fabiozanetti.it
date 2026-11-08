@@ -3,6 +3,8 @@ import Link from "next/link";
 import { siteConfig } from "@/site.config";
 import { getAllProjects } from "@/lib/projects";
 import { ContactBox } from "@/app/components/ContactBox";
+import { Navbar } from "@/app/components/Navbar";
+import { InteractiveShowcase } from "@/app/components/InteractiveShowcase";
 import {
   FileText,
   ArrowRight,
@@ -59,53 +61,8 @@ export default function Home() {
 
   return (
     <div className="relative min-h-screen bg-grid-pattern glow-radial flex flex-col justify-between">
-      {/* Header Sticky */}
-      <header className="sticky top-0 z-50 backdrop-blur-md bg-[#090a0f]/80 border-b border-zinc-800/80">
-        <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
-          <Link
-            href="/"
-            className="flex items-center gap-2.5 font-medium tracking-tight text-zinc-100 hover:text-white transition-colors"
-          >
-            <span className="w-8 h-8 rounded-lg bg-zinc-800 border border-zinc-700/80 flex items-center justify-center font-bold text-xs text-indigo-400">
-              FZ
-            </span>
-            <span className="text-sm font-semibold">{siteConfig.personal.name}</span>
-          </Link>
-
-          <nav className="hidden md:flex items-center gap-6 text-sm text-zinc-400">
-            <a href="#competenze" className="hover:text-zinc-100 transition-colors">
-              Competenze
-            </a>
-            <a href="#progetti" className="hover:text-zinc-100 transition-colors">
-              Progetti
-            </a>
-            <a href="#formazione" className="hover:text-zinc-100 transition-colors">
-              Formazione
-            </a>
-            <a href="#contatti" className="hover:text-zinc-100 transition-colors">
-              Contatti
-            </a>
-          </nav>
-
-          <div className="flex items-center gap-3">
-            <a
-              href={siteConfig.links.cvUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-full bg-zinc-800/90 hover:bg-zinc-700 text-zinc-200 border border-zinc-700/60 transition-all shadow-sm"
-            >
-              <FileText className="w-3.5 h-3.5 text-indigo-400" />
-              <span>Scarica CV</span>
-            </a>
-            <a
-              href="#contatti"
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium rounded-full bg-indigo-600 hover:bg-indigo-500 text-white transition-all shadow-sm shadow-indigo-600/30"
-            >
-              <span>Contattami</span>
-            </a>
-          </div>
-        </div>
-      </header>
+      {/* Header Sticky con Navbar responsive e menu mobile */}
+      <Navbar />
 
       {/* Main Content */}
       <main className="max-w-5xl mx-auto px-6 pt-16 pb-24 flex-1 w-full space-y-28">
@@ -463,6 +420,9 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        {/* Demo Interattiva dal Vivo (Sudoku & Terminale CLI) */}
+        <InteractiveShowcase />
 
         {/* 4. Formazione Accademica & Esami di Eccellenza */}
         <section id="formazione" className="space-y-6 scroll-mt-24">
